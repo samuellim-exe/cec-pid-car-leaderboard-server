@@ -2,31 +2,37 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const morgan = require("morgan");
+const authMiddleware = require("./middleware/auth.js");
 const port = process.env.PORT || 3001;
 require("./lib/prisma.js");
 
 app.use(cors());
 app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(morgan("dev"));
+// Authenticate all requests with x-auth-token header
+// app.use(authMiddleware);
 
-app.use("/api/teams", require("./routes/team"));
-app.use("/api/sessions", require("./routes/session"));
-app.use("/api/results", require("./routes/result"));
+app.use("/api/teams", authMiddleware, require("./routes/team"));
+app.use("/api/sessions", authMiddleware, require("./routes/session"));
+app.use("/api/results", authMiddleware, require("./routes/result"));
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-let latestScore = null; // Store the latest score
+// let latestScore = null; // Store the latest score
 let clients = []; // Store connected SSE clients
 
 // Route for ESP to upload score
-app.post("/esp", (req, res) => {
+app.post("/esp", authMiddleware, (req, res) => {
   const { score } = req.body;
   if (score === undefined) {
     return res.status(400).send("Score is required");
+  }
+  if (isNaN(score)) {
+    return res.status(400).send("Score must be Int");
   }
 
   console.log(`Score received: ${score}`);
@@ -35,14 +41,15 @@ app.post("/esp", (req, res) => {
   // Send the score to all connected clients
   clients.forEach((client) => client.res.write(`data: ${score}\n\n`));
 
-  res.status(200).send("Score received");
+  // res.status(200).send("Score received");
+  res.status(200).json({ message: "Score received", score: score });
 });
 
 // SSE endpoint to send score updates to the frontend
-app.get("/api/score-updates", (req, res) => {
+app.get("/api/esp-live-score", (req, res) => {
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
-    res.setHeader("Connection", "keep-alive");
+  res.setHeader("Connection", "keep-alive");
   res.setHeader("Access-Control-Allow-Origin", "*");
 
   // Store the client connection
