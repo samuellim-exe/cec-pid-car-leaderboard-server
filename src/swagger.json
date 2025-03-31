@@ -1,0 +1,914 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Time Leaderboard API",
+    "description": "API documentation for the Time Leaderboard server."
+  },
+  "host": "localhost:3001",
+  "basePath": "/",
+  "schemes": ["http"],
+  "paths": {
+    "/api/teams": {
+      "get": {
+        "summary": "Get all teams",
+        "description": "Retrieve a list of all teams.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of teams.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Team"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new team",
+        "description": "Add a new team to the database.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The name of the team."
+                }
+              },
+              "required": ["name"]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Team created successfully.",
+            "schema": {
+              "$ref": "#/definitions/Team"
+            }
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/api/teams/{id}": {
+      "get": {
+        "summary": "Get a team by ID",
+        "description": "Retrieve a specific team by its ID.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the team"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested team.",
+            "schema": {
+              "$ref": "#/definitions/Team"
+            }
+          },
+          "404": {
+            "description": "Team not found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a team by ID",
+        "description": "Update the details of a specific team.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the team"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "The new name of the team."
+                }
+              },
+              "required": ["name"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Team updated successfully.",
+            "schema": {
+              "$ref": "#/definitions/Team"
+            }
+          },
+          "404": {
+            "description": "Team not found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a team by ID",
+        "description": "Remove a specific team from the database.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the team"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Team deleted successfully.",
+            "schema": {
+              "$ref": "#/definitions/Team"
+            }
+          },
+          "404": {
+            "description": "Team not found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/api/teams/{id}/sessions": {
+      "get": {
+        "summary": "Get all sessions for a team",
+        "description": "Retrieve all sessions associated with a specific team.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the team"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of sessions for the team.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Session"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/api/teams/{id}/results": {
+      "get": {
+        "summary": "Get all results for a team",
+        "description": "Retrieve all results associated with a specific team.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the team"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of results for the team.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Result"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/api/sessions": {
+      "get": {
+        "summary": "Get all sessions",
+        "description": "Retrieve a list of all sessions.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of sessions.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Session"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new session",
+        "description": "Add a new session to the database.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "The title of the session."
+                }
+              },
+              "required": ["title"]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Session created successfully.",
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/api/sessions/latest": {
+      "get": {
+        "summary": "Get the latest session",
+        "description": "Retrieve the most recent session.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The latest session.",
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          },
+          "404": {
+            "description": "No current session found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/api/sessions/{id}": {
+      "get": {
+        "summary": "Get a session by ID",
+        "description": "Retrieve a specific session by its ID.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the session"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested session.",
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          },
+          "404": {
+            "description": "Session not found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a session by ID",
+        "description": "Update the details of a specific session.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the session"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "The new title of the session."
+                }
+              },
+              "required": ["title"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session updated successfully.",
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          },
+          "404": {
+            "description": "Session not found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a session by ID",
+        "description": "Remove a specific session from the database.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the session"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Session deleted successfully.",
+            "schema": {
+              "$ref": "#/definitions/Session"
+            }
+          },
+          "404": {
+            "description": "Session not found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/api/sessions/{id}/results": {
+      "get": {
+        "summary": "Get all results for a session",
+        "description": "Retrieve all results associated with a specific session.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the session"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of results for the session.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Result"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/api/sessions/{id}/teams": {
+      "get": {
+        "summary": "Get all teams for a session",
+        "description": "Retrieve all teams associated with a specific session.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the session"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of teams for the session.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Team"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/api/results": {
+      "get": {
+        "summary": "Get all results",
+        "description": "Retrieve a list of all results.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of results.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Result"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new result",
+        "description": "Add a new result to the database.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sessionId": {
+                  "type": "string",
+                  "description": "The ID of the session."
+                },
+                "teamId": {
+                  "type": "string",
+                  "description": "The ID of the team."
+                },
+                "score": {
+                  "type": "integer",
+                  "description": "The score value."
+                }
+              },
+              "required": ["sessionId", "teamId", "score"]
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Result created successfully.",
+            "schema": {
+              "$ref": "#/definitions/Result"
+            }
+          },
+          "404": {
+            "description": "Session or team not found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/api/results/{id}": {
+      "get": {
+        "summary": "Get a result by ID",
+        "description": "Retrieve a specific result by its ID.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the result"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The requested result.",
+            "schema": {
+              "$ref": "#/definitions/Result"
+            }
+          },
+          "404": {
+            "description": "Result not found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a result by ID",
+        "description": "Update the details of a specific result.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the result"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sessionId": {
+                  "type": "string",
+                  "description": "The ID of the session."
+                },
+                "teamId": {
+                  "type": "string",
+                  "description": "The ID of the team."
+                },
+                "score": {
+                  "type": "integer",
+                  "description": "The score value."
+                }
+              },
+              "required": ["sessionId", "teamId", "score"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result updated successfully.",
+            "schema": {
+              "$ref": "#/definitions/Result"
+            }
+          },
+          "404": {
+            "description": "Result, session, or team not found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a result by ID",
+        "description": "Remove a specific result from the database.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "ID of the result"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Result deleted successfully.",
+            "schema": {
+              "$ref": "#/definitions/Result"
+            }
+          },
+          "404": {
+            "description": "Result not found."
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/esp": {
+      "post": {
+        "summary": "Upload a new score",
+        "description": "Upload a new score from ESP32.",
+        "parameters": [
+          {
+            "name": "x-auth-token",
+            "in": "header",
+            "required": true,
+            "type": "string",
+            "default": "i-luv-cec",
+            "description": "Authentication token"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "score": {
+                  "type": "integer",
+                  "description": "The score to upload."
+                }
+              },
+              "required": ["score"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Score uploaded successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Score received"
+                },
+                "score": {
+                  "type": "integer",
+                  "example": 100
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid score or score is required."
+          }
+        }
+      }
+    },
+    "/api/esp-live-score": {
+      "get": {
+        "summary": "Get live score updates",
+        "description": "Retrieve live score updates via Server-Sent Events (SSE).",
+        "responses": {
+          "200": {
+            "description": "Live score updates stream (SSE)."
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Team": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Session": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "Result": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "teamId": {
+          "type": "string"
+        },
+        "sessionId": {
+          "type": "string"
+        },
+        "score": {
+          "type": "integer"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}

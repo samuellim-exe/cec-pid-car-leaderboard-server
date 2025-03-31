@@ -3,6 +3,8 @@ const app = express();
 const cors = require("cors");
 const morgan = require("morgan");
 const authMiddleware = require("./middleware/auth.js");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
 const port = process.env.PORT || 3001;
 require("./lib/prisma.js");
 
@@ -18,9 +20,11 @@ app.use("/api/teams", authMiddleware, require("./routes/team"));
 app.use("/api/sessions", authMiddleware, require("./routes/session"));
 app.use("/api/results", authMiddleware, require("./routes/result"));
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+// app.get("/", (req, res) => {
+//   res.send("hello");
+// });
+
+app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocument, { explorer: true }));
 
 // let latestScore = null; // Store the latest score
 let clients = []; // Store connected SSE clients

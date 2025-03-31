@@ -22,6 +22,8 @@ model Team {
   updatedAt DateTime @updatedAt
 }
 
+//TODO: Add isEnded to sessions
+// sessions can be eneded by making a POST request to /api/sessions/:id/end
 model Session {
   id        String   @id @default(cuid())
   title     String
