@@ -5,9 +5,9 @@
     "title": "Time Leaderboard API",
     "description": "API documentation for the Time Leaderboard server."
   },
-  "host": "localhost:3001",
+  "host": "cec-pid-car-leaderboard-server.onrender.com",
   "basePath": "/",
-  "schemes": ["http"],
+  "schemes": ["https"],
   "paths": {
     "/api/teams": {
       "get": {
