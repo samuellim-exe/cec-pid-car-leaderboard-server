@@ -24,7 +24,16 @@ app.use("/api/results", authMiddleware, require("./routes/result"));
 //   res.send("hello");
 // });
 
-app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocument, { explorer: true }));
+app.get("/", (req, res) => {
+  res.sendStatus(200)
+})
+
+app.use(
+  "/swagger-ui",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument, { explorer: true })
+);
+
 
 // let latestScore = null; // Store the latest score
 let clients = []; // Store connected SSE clients
