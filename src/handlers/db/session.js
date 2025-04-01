@@ -57,6 +57,19 @@ async function deleteSession(id) {
     return session;
 }
 
+async function endSession(id) {
+    const session = await prisma.session.update({
+        where: {
+        id: id,
+        },
+        data: {
+            isEnded: true,
+            endedAt: new Date(),
+        }
+    })
+    return session;
+}
+
 module.exports = {
     createSession,
     getAllSessions,
@@ -64,4 +77,5 @@ module.exports = {
     getCurrentSession,
     updateSession,
     deleteSession,
+    endSession
 };

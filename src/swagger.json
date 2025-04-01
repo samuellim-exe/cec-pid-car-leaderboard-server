@@ -5,9 +5,9 @@
     "title": "Time Leaderboard API",
     "description": "API documentation for the Time Leaderboard server."
   },
-  "host": "cec-pid-car-leaderboard-server.onrender.com",
+  "host": "localhost:3001",
   "basePath": "/",
-  "schemes": ["https"],
+  "schemes": ["http"],
   "paths": {
     "/api/teams": {
       "get": {
@@ -782,7 +782,7 @@
         }
       }
     },
-    "/esp": {
+    "/esp/{id}/{score}": {
       "post": {
         "summary": "Upload a new score",
         "description": "Upload a new score from ESP32.",
@@ -796,15 +796,30 @@
             "description": "Authentication token"
           },
           {
-            "in": "body",
-            "name": "body",
+            "in": "path",
+            "name": "id",
             "required": true,
             "schema": {
-              "type": "object",
+              "type": "integer",
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "description": "ID of the ESP32 timer"
+                }
+              },
+              "required": ["score"]
+            }
+          },
+          {
+            "in": "path",
+            "name": "score",
+            "required": true,
+            "schema": {
+              "type": "integer",
               "properties": {
                 "score": {
                   "type": "integer",
-                  "description": "The score to upload."
+                  "description": "Score"
                 }
               },
               "required": ["score"]

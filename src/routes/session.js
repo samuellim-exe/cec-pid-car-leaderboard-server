@@ -116,4 +116,18 @@ router.get("/:id/teams", async (req, res) => {
   }
 });
 
+// End a session
+router.post("/:id/end", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const session = await sessionHandler.endSession(id);
+    if (!session) {
+      return res.status(404).json({ error: "Session not found" });
+    }
+    res.status(200).json(session);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  } 
+});
+
 module.exports = router;

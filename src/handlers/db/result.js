@@ -1,12 +1,13 @@
 // CRUD Results
 const prisma = require("../../lib/prisma").prisma;
 
-async function createResult(sessionId, teamId, score) {
+async function createResult(sessionId, teamId, score, espId) {
     const result = await prisma.result.create({
         data: {
             sessionId: sessionId,
             teamId: teamId,
             score: score,
+            espId: espId,
         },
     });
     return result;
@@ -26,7 +27,7 @@ async function getResultById(id) {
     return result;
 }
 
-async function updateResult(id, sessionId, teamId, score) {
+async function updateResult(id, sessionId, teamId, score, espId) {
     const result = await prisma.result.update({
         where: {
             id: id,
@@ -35,6 +36,7 @@ async function updateResult(id, sessionId, teamId, score) {
             sessionId: sessionId,
             teamId: teamId,
             score: score,
+            espId: espId,
         },
     });
     return result;
@@ -49,10 +51,20 @@ async function deleteResult(id) {
     return result;
 }
 
+async function getResultByEspId(espId) {
+    const result = await prisma.result.findMany({
+        where: {
+            espId: espId,
+        },
+    });
+    return result;
+}
+
 module.exports = {
     createResult,
     getAllResults,
     getResultById,
     updateResult,
     deleteResult,
+    getResultByEspId,
 };

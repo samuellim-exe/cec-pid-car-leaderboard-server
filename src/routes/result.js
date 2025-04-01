@@ -9,7 +9,7 @@ const teamHandler = require("../handlers/db/team");
 // Create a new result
 router.post("/", async (req, res) => {
   try {
-    const { sessionId, teamId, score } = req.body;
+    const { sessionId, teamId, score, espId } = req.body;
     const session = await sessionHandler.getSessionById(sessionId);
     if (!session) {
       return res.status(404).json({ error: "Session not found" });
@@ -18,7 +18,13 @@ router.post("/", async (req, res) => {
     if (!team) {
       return res.status(404).json({ error: "Team not found" });
     }
-    const result = await resultHandler.createResult(sessionId, teamId, score);
+    if(!espId){
+      return res.status(400).json({ error: "ESP ID is required" });
+    }
+    if(session.isEnded) {
+      return res.status(400).json({ error: "Session has ended" });
+    }
+    const result = await resultHandler.createResult(sessionId, teamId, score, espId);
     res.status(201).json(result);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -83,6 +89,20 @@ router.delete("/:id", async (req, res) => {
       return res.status(404).json({ error: "Result not found" });
     }
     res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get results by ESP ID
+router.get("/esp/:espId", async (req, res) => {
+  try {
+    const { espId } = req.params;
+    const results = await resultHandler.getResultByEspId(espId);
+    if (!results) {
+      return res.status(404).json({ error: "Results not found" });
+    }
+    res.status(200).json(results);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

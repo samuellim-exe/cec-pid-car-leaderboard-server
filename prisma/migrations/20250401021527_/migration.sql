@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Result" ADD COLUMN     "espId" INTEGER NOT NULL DEFAULT 1;

@@ -9,8 +9,8 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
@@ -25,11 +25,13 @@ model Team {
 //TODO: Add isEnded to sessions
 // sessions can be eneded by making a POST request to /api/sessions/:id/end
 model Session {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   title     String
   results   Result[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isEnded   Boolean   @default(false)
+  endedAt   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Result {
@@ -40,6 +42,8 @@ model Result {
   score     Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  espId     Int
 
   team    Team    @relation(fields: [teamId], references: [id])
   session Session @relation(fields: [sessionId], references: [id])

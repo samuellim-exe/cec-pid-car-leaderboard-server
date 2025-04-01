@@ -39,20 +39,24 @@ app.use(
 let clients = []; // Store connected SSE clients
 
 // Route for ESP to upload score
-app.post("/esp", authMiddleware, (req, res) => {
-  const { score } = req.body;
+app.post("/esp/:id/:score", authMiddleware, (req, res) => {
+  const { score } = req.params;
+  const {id} = req.params;
   if (score === undefined) {
     return res.status(400).send("Score is required");
   }
   if (isNaN(score)) {
     return res.status(400).send("Score must be Int");
   }
+  if(isNaN(id) || id > 15 || id < 1) {
+    return res.status(400).send("Invalid ID provided")
+  }
 
-  console.log(`Score received: ${score}`);
-  latestScore = score;
+  console.log(`Score received from ESP with ID ${id}: ${score}`);
+  // latestScore = score;
 
   // Send the score to all connected clients
-  clients.forEach((client) => client.res.write(`data: ${score}\n\n`));
+  clients.forEach((client) => client.res.write(`data: ${id}:${score}\n\n`));
 
   // res.status(200).send("Score received");
   res.status(200).json({ message: "Score received", score: score });
