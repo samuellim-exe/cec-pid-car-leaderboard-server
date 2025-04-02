@@ -16,33 +16,47 @@ async function getAllTeams() {
 }
 
 async function getTeamById(id) {
-    const team = await prisma.team.findUnique({
-        where: {
-        id: id,
-        },
-    });
-    return team;
+  const team = await prisma.team.findUnique({
+    where: {
+      id: id,
+    },
+  });
+  return team;
 }
 
 async function updateTeam(id, name) {
-    const team = await prisma.team.update({
-        where: {
-        id: id,
-        },
-        data: {
-        name: name,
-        },
-    });
-    return team;
+  const team = await prisma.team.update({
+    where: {
+      id: id,
+    },
+    data: {
+      name: name,
+    },
+  });
+  return team;
 }
 
 async function deleteTeam(id) {
-    const team = await prisma.team.delete({
-        where: {
-        id: id,
-        },
+  try {
+    // 1. **Crucially, delete the related Result records first.**
+    await prisma.result.deleteMany({
+      where: {
+        teamId: id,
+      },
     });
-    return team;
+
+    // 2. Only after deleting the Results, delete the Team.
+    const team = await prisma.team.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return team; // Return the deleted team.
+  } catch (error) {
+    console.error("Error deleting team or related results:", error);
+    throw error; // Rethrow the error for proper handling.
+  }
 }
 
 module.exports = {

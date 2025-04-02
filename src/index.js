@@ -39,7 +39,7 @@ app.use(
 let clients = []; // Store connected SSE clients
 
 // Route for ESP to upload score
-app.post("/esp/:id/:score", authMiddleware, (req, res) => {
+app.post("/esp/:id/:score", (req, res) => {
   const { score } = req.params;
   const {id} = req.params;
   if (score === undefined) {
